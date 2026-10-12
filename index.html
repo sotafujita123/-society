@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一次世界大戦と現代世界の形成・近代日本経済 総合確認テスト</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-16">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white py-8 px-4 shadow-lg">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="inline-block bg-indigo-700 text-indigo-100 text-xs font-semibold px-3 py-1 rounded-full mb-2">歴史・政治経済 演習アプリ</span>
+            <h1 class="text-2xl md:text-3xl font-bold">第一次世界大戦・現代世界の形成と近代日本経済</h1>
+            <p class="mt-2 text-indigo-200 text-sm md:text-base">選択問題 ＆ 記述解答欄付きセルフチェック・クイズ</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 mt-8">
+
+        <!-- Info Box & Progress -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-slate-200">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">学習ガイダンス</h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        選択問題（全6問）と記述問題（全4問・記入欄あり）で構成されています。<br>
+                        記述問題は自分の考えを記入欄に入力した上で「解答を表示」を押し、ポイントが合っているかセルフチェックしましょう！
+                    </p>
+                </div>
+                <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-lg text-center min-w-[180px]">
+                    <div class="text-xs text-indigo-600 font-semibold">現在の獲得スコア</div>
+                    <div class="text-2xl font-extrabold text-indigo-900 mt-1"><span id="total-score">0</span> / 10 点</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="filterQuestions('all')" id="btn-all" class="px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow">すべて表示</button>
+            <button onclick="filterQuestions('choice')" id="btn-choice" class="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">選択問題のみ</button>
+            <button onclick="filterQuestions('text')" id="btn-text" class="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">記述問題のみ</button>
+        </div>
+
+        <!-- Questions Container -->
+        <div id="questions-container" class="space-y-8">
+
+            <!-- Question 1: Multiple Choice -->
+            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q1">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 1（選択）</span>
+                    <span class="text-xs text-slate-500">第一次世界大戦と日本</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-4">
+                    1915年、日本が第一次世界大戦中の混乱に乗じて中華民国（袁世凱政権）に対して突きつけた、山東省のドイツ権益継承などを盛り込んだ要求として正しいものはどれか。
+                </h3>
+                <div class="space-y-2" id="options-q1">
+                    <button onclick="checkChoice(1, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 治安維持法の要求</button>
+                    <button onclick="checkChoice(1, 1, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 二十一カ条の要求</button>
+                    <button onclick="checkChoice(1, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. ポーツマス条約の追加要求</button>
+                    <button onclick="checkChoice(1, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 四カ条条約に基づく権利主張</button>
+                </div>
+                <div id="feedback-q1" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            </div>
+
+            <!-- Question 2: Multiple Choice -->
+            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q2">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 2（選択）</span>
+                    <span class="text-xs text-slate-500">ロシア革命</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-4">
+                    1917年の十月革命直後、レーニン率いるボリシェヴィキ政府が即座に提示した「平和に関する布告」において主張された講和の3原則はどれか。
+                </h3>
+                <div class="space-y-2" id="options-q2">
+                    <button onclick="checkChoice(2, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 武力行使の無条件禁止・軍縮・賠償金の支払</button>
+                    <button onclick="checkChoice(2, 1, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 無併合・無賠償・民族自決</button>
+                    <button onclick="checkChoice(2, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 秘密外交の継続・自衛権の留保・即時停戦</button>
+                    <button onclick="checkChoice(2, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 自由貿易の確保・安全保障の確立・植民地維持</button>
+                </div>
+                <div id="feedback-q2" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            </div>
+
+            <!-- Question 3: Multiple Choice -->
+            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q3">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 3（選択）</span>
+                    <span class="text-xs text-slate-500">ヴェルサイユ・ワシントン体制</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-4">
+                    アメリカのウィルソン大統領が国際連盟の設立を提唱したにもかかわらず、アメリカ合衆国自身が国際連盟に加盟しなかった直接の理由はどれか。
+                </h3>
+                <div class="space-y-2" id="options-q3">
+                    <button onclick="checkChoice(3, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. イギリス・フランスがアメリカの参加を拒否したため</button>
+                    <button onclick="checkChoice(3, 1, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 常任理事国の座が与えられなかったため</button>
+                    <button onclick="checkChoice(3, 2, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 孤立主義の風潮から、アメリカ連邦上院がヴェルサイユ条約の批准を拒否したため</button>
+                    <button onclick="checkChoice(3, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. ワシントン会議の開催が決まり連盟が不要になったため</button>
+                </div>
+                <div id="feedback-q3" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            </div>
+
+            <!-- Question 4: Multiple Choice -->
+            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q4">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 4（選択）</span>
+                    <span class="text-xs text-slate-500">ワシントン体制</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-4">
+                    1921〜1922年のワシントン会議において、太平洋地域の現状維持を定めた「四カ条条約」が成立したことに伴い失効した二国間同盟はどれか。
+                </h3>
+                <div class="space-y-2" id="options-q4">
+                    <button onclick="checkChoice(4, 0, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 日英同盟</button>
+                    <button onclick="checkChoice(4, 1, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 露仏同盟</button>
+                    <button onclick="checkChoice(4, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 日清修好条規</button>
+                    <button onclick="checkChoice(4, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 独露再保障条約</button>
+                </div>
+                <div id="feedback-q4" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            </div>
+
+            <!-- Question 5: Multiple Choice -->
+            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 5（選択）</span>
+                    <span class="text-xs text-slate-500">昭和金融恐慌</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-4">
+                    1927（昭和2）年に日本で金融恐慌（昭和金融恐慌）が発生し、銀行の取付け騒ぎが相次ぐ直接のきっかけとなった要因はどれか。
+                </h3>
+                <div class="space-y-2" id="options-q5">
+                    <button onclick="checkChoice(5, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 金輸出解禁による金の国外流出</button>
+                    <button onclick="checkChoice(5, 1, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 関東大震災後に処理が停滞していた震災手形の不良債権化と蔵相の失言</button>
+                    <button onclick="checkChoice(5, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. ニューヨーク株価暴落に端を発する世界恐慌</button>
+                    <button onclick="checkChoice(5, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 松方財政による厳しいデフレ増税政策</button>
+                </div>
+                <div id="feedback-q5" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            </div>
+
+            <!-- Question 6: Multiple Choice -->
+            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q6">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 6（選択）</span>
+                    <span class="text-xs text-slate-500">明治の産業革命・財政</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-4">
+                    1881（明治14）年に大蔵卿に就任した松方正義が行った、紙幣価値の安定と銀本位制確立を目指した一連の財政政策（松方財政）の組み合わせとして正しいものはどれか。
+                </h3>
+                <div class="space-y-2" id="options-q6">
+                    <button onclick="checkChoice(6, 0, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 不換紙幣の回収・整理 — 日本銀行の設立と銀兌換紙幣の発行</button>
+                    <button onclick="checkChoice(6, 1, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 官営模範工場の払い下げ停止 — 金本位制への即時完全移行</button>
+                    <button onclick="checkChoice(6, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 積極的な公債発行によるインフレ誘発 — 租税の劇的な軽減</button>
+                    <button onclick="checkChoice(6, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 外国の資本・銀行の自由進出解禁 — 貿易赤字の容認</button>
+                </div>
+                <div id="feedback-q6" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            </div>
+
+            <!-- Question 7: Short Answer Text Box -->
+            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q7">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 7（記述）</span>
+                        <span class="text-xs text-slate-500">日本経済（金解禁と昭和恐慌）</span>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-3">
+                    1930年、浜口雄幸内閣の蔵相・井上準之助が進めた「金輸出解禁（金解禁）」の主な【目的】と、実施後に発生した【経済的影響】について、「為替相場」「世界恐慌」「デフレ」の3つの語句を用いて解説しなさい。
+                </h3>
+
+                <!-- Input Text Area -->
+                <div class="mt-4">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】（あなたの考えを書いてみよう）</label>
+                    <textarea id="input-q7" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between">
+                    <button onclick="toggleTextAnswer(7)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
+                        模範解答とポイントを表示
+                    </button>
+                </div>
+
+                <!-- Hidden Model Answer Box -->
+                <div id="answer-q7" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
+                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
+                            為替相場の安定と産業合理化による国際競争力の強化を目指して金輸出解禁を実施したが、直後に発生した世界恐慌の影響と重なったことで極度なデフレを引き起こし、日本経済は深刻な「昭和恐慌」へ陥った。
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li><strong class="text-emerald-800">目的:</strong> 為替相場の安定、国際競争力の強化（産業合理化）</li>
+                            <li><strong class="text-emerald-800">時期・背景:</strong> 世界恐慌の直前・発生期と重なったこと</li>
+                            <li><strong class="text-emerald-800">影響:</strong> 深刻なデフレの発生、昭和恐慌の深化</li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
+                        <button onclick="rateTextQuestion(7, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
+                        <button onclick="rateTextQuestion(7, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 8: Short Answer Text Box -->
+            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q8">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 8（記述）</span>
+                        <span class="text-xs text-slate-500">明治の産業革命</span>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-3">
+                    明治後期の日本の産業革命において、二大繊維産業であった「綿紡績業」と「製糸業」の原料調達と獲得市場（外貨獲得）に関する決定的な違いを短文で説明しなさい。
+                </h3>
+
+                <!-- Input Text Area -->
+                <div class="mt-4">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】</label>
+                    <textarea id="input-q8" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between">
+                    <button onclick="toggleTextAnswer(8)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
+                        模範解答とポイントを表示
+                    </button>
+                </div>
+
+                <!-- Hidden Model Answer Box -->
+                <div id="answer-q8" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
+                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
+                            綿紡績業は輸入原綿に依存し主に清（中国）等へ綿糸を輸出したのに対し、製糸業は国産の繭（絹糸）を用いて生糸を生産し、主にアメリカへ輸出して貴重な外貨を獲得した。
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li><strong class="text-emerald-800">綿紡績業:</strong> 原料は輸入（原綿）、主な輸出先はアジア（中国など）</li>
+                            <li><strong class="text-emerald-800">製糸業:</strong> 原料は国産（農家の繭）、主な輸出先はアメリカ、貴重な外貨を獲得</li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
+                        <button onclick="rateTextQuestion(8, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
+                        <button onclick="rateTextQuestion(8, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 9: Short Answer Text Box -->
+            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q9">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 9（記述）</span>
+                        <span class="text-xs text-slate-500">不戦条約</span>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-3">
+                    1928年にパリで締結された「不戦条約（ケロッグ・ブリアン協定）」が持っていた画期的な意義と、実際の戦争防止において残されていた最大の【抜け道（限界）】について説明しなさい。
+                </h3>
+
+                <!-- Input Text Area -->
+                <div class="mt-4">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】</label>
+                    <textarea id="input-q9" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between">
+                    <button onclick="toggleTextAnswer(9)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
+                        模範解答とポイントを表示
+                    </button>
+                </div>
+
+                <!-- Hidden Model Answer Box -->
+                <div id="answer-q9" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
+                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
+                            国家の政策手段としての戦争を一般的に禁止し紛争の平和的解決を義務付けた点で画期的であったが、「自衛権に基づく戦争（自衛行動）」は除外・留保されていたため、自衛を口実とした侵略行為を防ぐことができなかった。
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li><strong class="text-emerald-800">画期的な意義:</strong> 国家の政策手段としての戦争放棄・国際紛争の平和的解決</li>
+                            <li><strong class="text-emerald-800">限界・抜け道:</strong> 「自衛のための戦争（自衛権）」の留保・除外</li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
+                        <button onclick="rateTextQuestion(9, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
+                        <button onclick="rateTextQuestion(9, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 10: Short Answer Text Box -->
+            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 10（記述）</span>
+                        <span class="text-xs text-slate-500">ロシア革命と十四カ条</span>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 mb-3">
+                    1917年にロシアでレーニンが「平和に関する布告」を出したことが、1918年にアメリカのウィルソン大統領が「十四カ条」の平和原則を発表するに至った政治的背景にどのように影響を与えたか簡潔に説明しなさい。
+                </h3>
+
+                <!-- Input Text Area -->
+                <div class="mt-4">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】</label>
+                    <textarea id="input-q10" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between">
+                    <button onclick="toggleTextAnswer(10)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
+                        模範解答とポイントを表示
+                    </button>
+                </div>
+
+                <!-- Hidden Model Answer Box -->
+                <div id="answer-q10" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
+                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
+                            レーニンが無併合・無賠償・民族自決を掲げて即時講和を訴えたことで世界的人気を集めたため、連合国側の主導権維持と資本主義陣営の正当性を主張する目的で、ウィルソンが対抗して「十四カ条」を発表した。
+                        </p>
+                    </div>
+                    <div>
+                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li><strong class="text-emerald-800">レーニンの講和のインパクト:</strong> 即時講和の呼びかけと労働者・民衆へのアピール</li>
+                            <li><strong class="text-emerald-800">ウィルソンの意図:</strong> 社会主義（ボリシェヴィキ）への対抗、資本主義陣営の戦争目的の正当化と主導権の確保</li>
+                        </ul>
+                    </div>
+                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
+                        <button onclick="rateTextQuestion(10, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
+                        <button onclick="rateTextQuestion(10, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Finish Banner -->
+        <div class="mt-12 bg-indigo-900 text-white rounded-xl p-8 text-center shadow-lg">
+            <h3 class="text-xl font-bold mb-2">お疲れ様でした！</h3>
+            <p class="text-indigo-200 text-sm max-w-md mx-auto mb-6">間違えた問題や記述が不十分だった問題は、教科書の該当箇所（ヴェルサイユ体制、松方財政、金解禁など）をもう一度見直しておきましょう！</p>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="bg-white text-indigo-900 font-bold px-6 py-2.5 rounded-lg hover:bg-indigo-50 transition shadow">
+                ページの一番上に戻る
+            </button>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const scores = {
+            1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
+            7: 0, 8: 0, 9: 0, 10: 0
+        };
+
+        const explanations = {
+            1: "正解: B. 二十一カ条の要求\n【解説】1915年、第2次大隈重信内閣は中国の袁世凱政権に対し、ドイツが山東省に持っていた権益の継承や南満州・東部内蒙古での益拡張などを求めた「二十一カ条の要求」を突きつけ、承諾させました。",
+            2: "正解: B. 無併合・無賠償・民族自決\n【解説】1917年の十月革命で成立したレーニン率いるボリシェヴィキ政府は、「平和に関する布告」で領土の無併合・賠償金の無支払・民族自決に基づく即時講和を呼びかけました。",
+            3: "正解: C. 孤立主義の風潮から、アメリカ連邦上院がヴェルサイユ条約の批准を拒否したため\n【解説】ウィルソン大統領が主導した国際連盟でしたが、アメリカ議会（上院）は伝統的な孤立主義（モンロー主義）の影響からヴェルサイユ条約の批准を拒否し、アメリカは不参加となりました。",
+            4: "正解: A. 日英同盟\n【解説】1921〜22年のワシントン会議で締結された「四カ条条約」は太平洋地域の現状維持を定めたもので、これにより1902年以来の「日英同盟」が解消されました。",
+            5: "正解: B. 関東大震災後に処理が停滞していた震災手形の不良債権化と蔵相の失言\n【解説】1923年の関東大震災後に発行された「震災手形」の決済不能（不良債権化）が背景にあり、1927年に片岡直温蔵相が議会で「東京渡辺銀行が破綻した」と失言したことで取付け騒ぎが勃発しました。",
+            6: "正解: A. 不換紙幣の回収・整理 — 日本銀行の設立と銀兌換紙幣の発行\n【解説】松方財政では紙幣整理と増税（デフレ政策）を進め、1882年に中央銀行である日本銀行を設立、1885年から銀兌換紙幣を発行して紙幣価値を安定させました。"
+        };
+
+        function checkChoice(qNum, selectedIdx, isCorrect) {
+            const container = document.getElementById(`options-q${qNum}`);
+            const buttons = container.querySelectorAll('.opt-btn');
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === selectedIdx) {
+                    btn.classList.remove('hover:bg-slate-50', 'border-slate-200');
+                    if (isCorrect) {
+                        btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'font-bold');
+                    } else {
+                        btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
+                    }
+                }
+            });
+
+            const feedback = document.getElementById(`feedback-q${qNum}`);
+            feedback.classList.remove('hidden');
+            if (isCorrect) {
+                feedback.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                feedback.innerHTML = `<strong>⭕ 正解！</strong><br><p class="mt-1 text-xs whitespace-pre-line">${explanations[qNum]}</p>`;
+                scores[qNum] = 1;
+            } else {
+                feedback.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200');
+                feedback.innerHTML = `<strong>❌ 不正解...</strong><br><p class="mt-1 text-xs whitespace-pre-line">${explanations[qNum]}</p>`;
+                scores[qNum] = 0;
+            }
+
+            updateTotalScore();
+        }
+
+        function toggleTextAnswer(qNum) {
+            const ansBox = document.getElementById(`answer-q${qNum}`);
+            ansBox.classList.toggle('hidden');
+        }
+
+        function rateTextQuestion(qNum, isPoint) {
+            scores[qNum] = isPoint ? 1 : 0;
+            const ansBox = document.getElementById(`answer-q${qNum}`);
+            let badge = ansBox.querySelector('.eval-badge');
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.className = 'eval-badge mt-2 text-xs font-bold px-2 py-1 rounded inline-block';
+                ansBox.appendChild(badge);
+            }
+
+            if (isPoint) {
+                badge.className = 'eval-badge mt-2 text-xs font-bold px-2.5 py-1 rounded inline-block bg-emerald-200 text-emerald-900';
+                badge.textContent = '評価: 1点 (正解)';
+            } else {
+                badge.className = 'eval-badge mt-2 text-xs font-bold px-2.5 py-1 rounded inline-block bg-slate-200 text-slate-800';
+                badge.textContent = '評価: 0点 (復習が必要)';
+            }
+
+            updateTotalScore();
+        }
+
+        function updateTotalScore() {
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            document.getElementById('total-score').textContent = total;
+        }
+
+        function filterQuestions(type) {
+            const allCards = document.querySelectorAll('.q-card');
+            const btnAll = document.getElementById('btn-all');
+            const btnChoice = document.getElementById('btn-choice');
+            const btnText = document.getElementById('btn-text');
+
+            // Reset styles
+            [btnAll, btnChoice, btnText].forEach(btn => {
+                btn.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-100';
+            });
+
+            if (type === 'all') {
+                btnAll.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow';
+                allCards.forEach(c => c.style.display = 'block');
+            } else if (type === 'choice') {
+                btnChoice.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow';
+                allCards.forEach(c => {
+                    c.style.display = c.classList.contains('choice-q') ? 'block' : 'none';
+                });
+            } else if (type === 'text') {
+                btnText.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow';
+                allCards.forEach(c => {
+                    c.style.display = c.classList.contains('text-q') ? 'block' : 'none';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+```eof
+
+### アプリの概要と特徴
+1. **選択問題（6問）**: タップすると即時に正誤判定と解説が表示され、スコアが自動加算されます。
+2. **記入欄付き記述問題（4問）**: 自分の解答を入力欄（`<textarea>`）に書いてから「模範解答とポイントを表示」をタップし、キーワードや論点が抑えられているか確認できます。
+3. **自己採点・スコア集計**: 記述問題も自己評価ボタンで点数（1点 / 0点）を加算でき、リアルタイムで合計点が記録されます。
+
+記述問題の復習やアウトプット練習にぜひ活用してください！
