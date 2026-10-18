@@ -382,12 +382,12 @@
 
       <!-- STEP 2: 地理総合 ジャンル選択 -->
       <div id="test-step-genre" style="display: none;">
-        <h2 class="section-title">地理総合：ジャンルを選択（10問出題）</h2>
-        <button class="btn" onclick="startQuiz(1)">ジャンル1：大気循環と気候要素</button>
-        <button class="btn" onclick="startQuiz(2)">ジャンル2：熱帯・乾燥帯の気候と生活</button>
-        <button class="btn" onclick="startQuiz(3)">ジャンル3：温帯の気候と生活</button>
-        <button class="btn" onclick="startQuiz(4)">ジャンル4：亜寒帯・寒帯の気候と生活</button>
-        <button class="btn btn-secondary" onclick="startQuiz('all')">★ すべて（全ジャンルから）</button>
+        <h2 class="section-title">地理総合：コースを選択（全10問）</h2>
+        <button class="btn" onclick="startQuiz(1)">ジャンル1：大気循環と気候要素（10問）</button>
+        <button class="btn" onclick="startQuiz(2)">ジャンル2：熱帯・乾燥帯の気候と生活（10問）</button>
+        <button class="btn" onclick="startQuiz(3)">ジャンル3：温帯の気候と生活（10問）</button>
+        <button class="btn" onclick="startQuiz(4)">ジャンル4：亜寒帯・寒帯の気候と生活（10問）</button>
+        <button class="btn btn-secondary" onclick="startQuiz('all')">★ すべてのジャンルから（10問）</button>
         <button class="btn btn-secondary" style="background:#95a5a6; margin-top:20px;" onclick="resetTestPage()">← 科目選択に戻る</button>
       </div>
 
@@ -550,6 +550,16 @@
     const overlay = document.getElementById('overlay');
     const headerTitle = document.getElementById('header-title');
 
+    /* フィッシャー–イェーツの完全ランダムシャッフル関数 */
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
     /* ハンバーガーメニュー制御 */
     function toggleMenu() {
       sidebar.classList.toggle('open');
@@ -597,7 +607,7 @@
       score = 0;
     }
 
-    /* テスト開始（ジャンル選択から自動的に10問ランダム抽出） */
+    /* テスト開始（ジャンル選択／全ジャンル選択から10問ランダム抽出） */
     function startQuiz(genreTarget) {
       let pool = [];
 
@@ -607,9 +617,9 @@
         pool = geoQuestions.filter(q => q.genre === genreTarget);
       }
 
-      // ランダムシャッフルして先頭10問を取り出す
-      pool.sort(() => Math.random() - 0.5);
-      currentQuizList = pool.slice(0, 10);
+      // 完全にシャッフルして10問だけを取り出す
+      const shuffled = shuffle(pool);
+      currentQuizList = shuffled.slice(0, 10);
 
       currentQuizIndex = 0;
       score = 0;
