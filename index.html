@@ -154,7 +154,7 @@
       background-color: #E67E22;
     }
 
-    /* 科目・ジャンル選択 */
+    /* タイトル */
     .section-title {
       font-size: 18px;
       margin-bottom: 15px;
@@ -382,7 +382,7 @@
 
       <!-- STEP 2: 地理総合 ジャンル選択 -->
       <div id="test-step-genre" style="display: none;">
-        <h2 class="section-title">地理総合：ジャンルを選択</h2>
+        <h2 class="section-title">地理総合：ジャンルを選択（10問出題）</h2>
         <button class="btn" onclick="startQuiz(1)">ジャンル1：大気循環と気候要素</button>
         <button class="btn" onclick="startQuiz(2)">ジャンル2：熱帯・乾燥帯の気候と生活</button>
         <button class="btn" onclick="startQuiz(3)">ジャンル3：温帯の気候と生活</button>
@@ -396,7 +396,7 @@
         <div class="quiz-card" id="quiz-card">
           <div class="quiz-header">
             <span id="quiz-genre-name">ジャンル1</span>
-            <span id="quiz-progress">第 1 / 15 問</span>
+            <span id="quiz-progress">第 1 / 10 問</span>
           </div>
           <div class="quiz-question" id="quiz-question-text">
             問題文がここに入ります。
@@ -425,7 +425,7 @@
       <div id="test-step-result" style="display: none; text-align: center;">
         <h2 class="section-title">テスト終了！</h2>
         <div style="font-size: 24px; font-weight: bold; margin: 20px 0;" id="result-score">
-          0 / 0 問正解
+          10 問中 0 問正解
         </div>
         <button class="btn" onclick="resetTestPage()">もう一度解く</button>
       </div>
@@ -560,24 +560,22 @@
     function navigate(pageName) {
       toggleMenu();
       
-      // 全ページ非表示
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
       if (pageName === 'test') {
         document.getElementById('page-test').classList.add('active');
         headerTitle.innerText = "テスト";
-        resetTestPage(); // テストページ離脱・再進入時はリセット
+        resetTestPage(); // テストページ離脱時はリセット
       } else if (pageName === 'wrong') {
         document.getElementById('page-wrong').classList.add('active');
         headerTitle.innerText = "間違えた問題";
-        renderWrongList('geo'); // デフォルトは地理総合
+        renderWrongList('geo');
       }
     }
 
     /* テスト：STEP 1 科目選択 */
     function selectSubject(subject) {
       if (subject === 'history') {
-        // 歴史総合：タップしても何も表示しない（空）
         document.getElementById('test-step-subject').style.display = 'none';
         document.getElementById('test-step-genre').style.display = 'none';
         document.getElementById('test-step-quiz').style.display = 'none';
@@ -599,16 +597,19 @@
       score = 0;
     }
 
-    /* テスト開始 */
+    /* テスト開始（ジャンル選択から自動的に10問ランダム抽出） */
     function startQuiz(genreTarget) {
+      let pool = [];
+
       if (genreTarget === 'all') {
-        currentQuizList = [...geoQuestions];
+        pool = [...geoQuestions];
       } else {
-        currentQuizList = geoQuestions.filter(q => q.genre === genreTarget);
+        pool = geoQuestions.filter(q => q.genre === genreTarget);
       }
 
-      // ランダムシャッフル
-      currentQuizList.sort(() => Math.random() - 0.5);
+      // ランダムシャッフルして先頭10問を取り出す
+      pool.sort(() => Math.random() - 0.5);
+      currentQuizList = pool.slice(0, 10);
 
       currentQuizIndex = 0;
       score = 0;
