@@ -1,481 +1,770 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第一次世界大戦と現代世界の形成・近代日本経済 総合確認テスト</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background-color: #f3f4f6;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一問一答 学習アプリ</title>
+  <style>
+    :root {
+      --primary-color: #4A90E2;
+      --bg-color: #F4F7F9;
+      --card-bg: #FFFFFF;
+      --text-color: #333333;
+      --correct-color: #2ECC71;
+      --correct-bg: #E8F8F5;
+      --wrong-color: #E74C3C;
+      --wrong-bg: #FDEDEC;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ヘッダー */
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .menu-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      margin-right: 15px;
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* サイドバー (ハンバーガーメニュー) */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 250px;
+      height: 100%;
+      background-color: var(--card-bg);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+      transition: left 0.3s ease;
+      z-index: 200;
+      padding-top: 60px;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li a {
+      display: block;
+      padding: 15px 20px;
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+    }
+
+    .sidebar li a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      z-index: 150;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* メインコンテンツ */
+    main {
+      flex: 1;
+      padding: 20px;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ボタン共通 */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .btn:active {
+      opacity: 0.8;
+    }
+
+    .btn-secondary {
+      background-color: #7F8C8D;
+    }
+
+    .btn-answer {
+      background-color: #E67E22;
+    }
+
+    /* 科目・ジャンル選択 */
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    /* テスト画面 */
+    .quiz-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      border: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    /* 発光エフェクト */
+    .quiz-card.correct {
+      border-color: var(--correct-color);
+      background-color: var(--correct-bg);
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+    }
+
+    .quiz-card.wrong {
+      border-color: var(--wrong-color);
+      background-color: var(--wrong-bg);
+      box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+    }
+
+    .quiz-header {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .quiz-question {
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary-color);
+    }
+
+    .result-msg {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .correct-text {
+      color: var(--correct-color);
+    }
+
+    .wrong-text {
+      color: var(--wrong-color);
+    }
+
+    .official-answer {
+      background: rgba(255,255,255,0.8);
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* タブ切り替え (間違えた問題用) */
+    .tab-group {
+      display: flex;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: bold;
+      color: #777;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom: 3px solid var(--primary-color);
+    }
+
+    /* 単語カード (フリップ式) */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .flip-card {
+      background-color: transparent;
+      width: 100%;
+      min-height: 110px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 110px;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      min-height: 110px;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .flip-card-front {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .flip-card-back {
+      background-color: #2C3E50;
+      color: white;
+      transform: rotateY(180deg);
+    }
+
+    .card-genre {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 5px;
+    }
+
+    .card-hint {
+      font-size: 11px;
+      color: var(--primary-color);
+      margin-top: 8px;
+    }
+
+    .card-delete {
+      margin-top: 10px;
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: #888;
+      margin-top: 30px;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen pb-16">
+<body>
 
-    <!-- Header -->
-    <header class="bg-indigo-900 text-white py-8 px-4 shadow-lg">
-        <div class="max-w-4xl mx-auto text-center">
-            <span class="inline-block bg-indigo-700 text-indigo-100 text-xs font-semibold px-3 py-1 rounded-full mb-2">歴史・政治経済 演習アプリ</span>
-            <h1 class="text-2xl md:text-3xl font-bold">第一次世界大戦・現代世界の形成と近代日本経済</h1>
-            <p class="mt-2 text-indigo-200 text-sm md:text-base">選択問題 ＆ 記述解答欄付きセルフチェック・クイズ</p>
+  <!-- ヘッダー -->
+  <header>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <h1 id="header-title">テスト</h1>
+  </header>
+
+  <!-- サイドバー -->
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+  <nav class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="#" onclick="navigate('test')">📝 テスト</a></li>
+      <li><a href="#" onclick="navigate('wrong')">❌ 間違えた問題</a></li>
+    </ul>
+  </nav>
+
+  <!-- メイン画面 -->
+  <main>
+    <!-- ================= 1. テストページ ================= -->
+    <section id="page-test" class="page active">
+      
+      <!-- STEP 1: 科目選択 -->
+      <div id="test-step-subject">
+        <h2 class="section-title">科目を選択してください</h2>
+        <button class="btn" onclick="selectSubject('geo')">地理総合</button>
+        <button class="btn btn-secondary" onclick="selectSubject('history')">歴史総合</button>
+      </div>
+
+      <!-- STEP 2: 地理総合 ジャンル選択 -->
+      <div id="test-step-genre" style="display: none;">
+        <h2 class="section-title">地理総合：ジャンルを選択</h2>
+        <button class="btn" onclick="startQuiz(1)">ジャンル1：大気循環と気候要素</button>
+        <button class="btn" onclick="startQuiz(2)">ジャンル2：熱帯・乾燥帯の気候と生活</button>
+        <button class="btn" onclick="startQuiz(3)">ジャンル3：温帯の気候と生活</button>
+        <button class="btn" onclick="startQuiz(4)">ジャンル4：亜寒帯・寒帯の気候と生活</button>
+        <button class="btn btn-secondary" onclick="startQuiz('all')">★ すべて（全ジャンルから）</button>
+        <button class="btn btn-secondary" style="background:#95a5a6; margin-top:20px;" onclick="resetTestPage()">← 科目選択に戻る</button>
+      </div>
+
+      <!-- STEP 3: クイズ画面 -->
+      <div id="test-step-quiz" style="display: none;">
+        <div class="quiz-card" id="quiz-card">
+          <div class="quiz-header">
+            <span id="quiz-genre-name">ジャンル1</span>
+            <span id="quiz-progress">第 1 / 15 問</span>
+          </div>
+          <div class="quiz-question" id="quiz-question-text">
+            問題文がここに入ります。
+          </div>
+
+          <div class="input-group">
+            <input type="text" id="user-input" placeholder="答えを入力..." autocomplete="off">
+          </div>
+
+          <!-- 解答前ボタン -->
+          <div id="action-before">
+            <button class="btn" onclick="checkAnswer()">判定する</button>
+            <button class="btn btn-answer" onclick="giveUp()">答えを表示（わからない）</button>
+          </div>
+
+          <!-- 解答後フィードバック -->
+          <div id="action-after" style="display: none;">
+            <div id="result-message" class="result-msg"></div>
+            <div id="official-answer-box" class="official-answer"></div>
+            <button class="btn" style="margin-top: 15px;" onclick="nextQuestion()">次へ</button>
+          </div>
         </div>
-    </header>
+      </div>
 
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 mt-8">
-
-        <!-- Info Box & Progress -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-slate-200">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-800">学習ガイダンス</h2>
-                    <p class="text-sm text-slate-600 mt-1">
-                        選択問題（全6問）と記述問題（全4問・記入欄あり）で構成されています。<br>
-                        記述問題は自分の考えを記入欄に入力した上で「解答を表示」を押し、ポイントが合っているかセルフチェックしましょう！
-                    </p>
-                </div>
-                <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-lg text-center min-w-[180px]">
-                    <div class="text-xs text-indigo-600 font-semibold">現在の獲得スコア</div>
-                    <div class="text-2xl font-extrabold text-indigo-900 mt-1"><span id="total-score">0</span> / 10 点</div>
-                </div>
-            </div>
+      <!-- STEP 4: 結果画面 -->
+      <div id="test-step-result" style="display: none; text-align: center;">
+        <h2 class="section-title">テスト終了！</h2>
+        <div style="font-size: 24px; font-weight: bold; margin: 20px 0;" id="result-score">
+          0 / 0 問正解
         </div>
+        <button class="btn" onclick="resetTestPage()">もう一度解く</button>
+      </div>
 
-        <!-- Filter Buttons -->
-        <div class="flex gap-2 mb-6">
-            <button onclick="filterQuestions('all')" id="btn-all" class="px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow">すべて表示</button>
-            <button onclick="filterQuestions('choice')" id="btn-choice" class="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">選択問題のみ</button>
-            <button onclick="filterQuestions('text')" id="btn-text" class="px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-100">記述問題のみ</button>
-        </div>
+    </section>
 
-        <!-- Questions Container -->
-        <div id="questions-container" class="space-y-8">
+    <!-- ================= 2. 間違えた問題ページ ================= -->
+    <section id="page-wrong" class="page">
+      <div class="tab-group">
+        <button class="tab active" id="tab-geo" onclick="switchWrongTab('geo')">地理総合</button>
+        <button class="tab" id="tab-history" onclick="switchWrongTab('history')">歴史総合</button>
+      </div>
 
-            <!-- Question 1: Multiple Choice -->
-            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q1">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 1（選択）</span>
-                    <span class="text-xs text-slate-500">第一次世界大戦と日本</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-4">
-                    1915年、日本が第一次世界大戦中の混乱に乗じて中華民国（袁世凱政権）に対して突きつけた、山東省のドイツ権益継承などを盛り込んだ要求として正しいものはどれか。
-                </h3>
-                <div class="space-y-2" id="options-q1">
-                    <button onclick="checkChoice(1, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 治安維持法の要求</button>
-                    <button onclick="checkChoice(1, 1, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 二十一カ条の要求</button>
-                    <button onclick="checkChoice(1, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. ポーツマス条約の追加要求</button>
-                    <button onclick="checkChoice(1, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 四カ条条約に基づく権利主張</button>
-                </div>
-                <div id="feedback-q1" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+      <div id="wrong-list-container" class="card-list">
+        <!-- カードがJavaScriptで動的生成されます -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* ==========================================
+       問題データ（地理総合・プリント準拠）
+    ========================================== */
+    const geoQuestions = [
+      // ジャンル1
+      { id: 101, genre: 1, gName: "ジャンル1：大気循環", q: "大気で起こる様々な現象を何というか。", a: ["気象"] },
+      { id: 102, genre: 1, gName: "ジャンル1：大気循環", q: "1年周期で繰り返される大気の状態を何というか。", a: ["気候"] },
+      { id: 103, genre: 1, gName: "ジャンル1：大気循環", q: "「気候の三要素」とされる3つの要素を答えよ。", a: ["気温・降水量・風", "気温 降水量 風", "気温,降水量,風"] },
+      { id: 104, genre: 1, gName: "ジャンル1：大気循環", q: "緯度、高度、地形、海流など、気候要素に影響を与える要因を総称して何というか。", a: ["気候因子"] },
+      { id: 105, genre: 1, gName: "ジャンル1：大気循環", q: "1年の中の最暖月平均気温と最寒月平均気温の差を何というか。", a: ["年較差"] },
+      { id: 106, genre: 1, gName: "ジャンル1：大気循環", q: "1日の最高気温と最低気温の差を何というか。", a: ["日較差"] },
+      { id: 107, genre: 1, gName: "ジャンル1：大気循環", q: "大陸西岸のように、偏西風や暖流の影響で気温の日較差・年較差ともに小さくなる気候を何というか。", a: ["海洋性気候"] },
+      { id: 108, genre: 1, gName: "ジャンル1：大気循環", q: "内陸部のように、気温の日較差・年較差ともに大きくなる気候を何というか。", a: ["大陸性気候"] },
+      { id: 109, genre: 1, gName: "ジャンル1：大気循環", q: "標高が高くなると気温が低下する割合（気温の減率）は、100mにつき約何℃低下するか。", a: ["約0.65℃", "0.65℃", "0.65"] },
+      { id: 110, genre: 1, gName: "ジャンル1：大気循環", q: "平地の気温が30℃のとき、標高3776mの富士山山頂の気温は約何℃になるか（100mにつき0.65℃低下として計算）。", a: ["約5.5℃", "5.5℃", "約5.45℃", "5.45℃", "5.5"] },
+      { id: 111, genre: 1, gName: "ジャンル1：大気循環", q: "赤道付近に形成され、上昇気流が卓越して年間を通して降水量が多くなる気圧帯を何というか。", a: ["赤道低圧帯", "熱帯収束帯"] },
+      { id: 112, genre: 1, gName: "ジャンル1：大気循環", q: "南北緯度20〜30度付近に位置し、下降気流が卓越するため乾燥する気圧帯を何というか。", a: ["亜熱帯高圧帯", "中緯度高圧帯"] },
+      { id: 113, genre: 1, gName: "ジャンル1：大気循環", q: "緯度35〜60度付近で、偏西風と極東風がぶつかり降水量が多くなる気圧帯を何というか。", a: ["高緯度低圧帯"] },
+      { id: 114, genre: 1, gName: "ジャンル1：大気循環", q: "亜熱帯高圧帯から高緯度側に向かって吹き出す風を何というか。", a: ["偏西風"] },
+      { id: 115, genre: 1, gName: "ジャンル1：大気循環", q: "亜熱帯高圧帯から赤道に向かって吹き出す風を何というか。", a: ["貿易風", "北東貿易風", "南東貿易風"] },
+      { id: 116, genre: 1, gName: "ジャンル1：大気循環", q: "大陸と海洋の間で、夏と冬に向きがほぼ逆転して吹く風を何というか。", a: ["季節風", "モンスーン"] },
+      { id: 117, genre: 1, gName: "ジャンル1：大気循環", q: "熱帯低気圧のうち、北西太平洋で発生するものを何というか。", a: ["台風"] },
+      { id: 118, genre: 1, gName: "ジャンル1：大気循環", q: "熱帯低気圧のうち、大西洋や北東太平洋で発生するものを何というか。", a: ["ハリケーン"] },
+      { id: 119, genre: 1, gName: "ジャンル1：大気循環", q: "熱帯低気圧のうち、インド洋や南太平洋で発生するものを何というか。", a: ["サイクロン"] },
+      { id: 120, genre: 1, gName: "ジャンル1：大気循環", q: "植物の分布をもとに世界の気候区分を考案したドイツの気候学者はだれか。", a: ["ケッペン"] },
+
+      // ジャンル2
+      { id: 201, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "ケッペンの気候区分において、熱帯（A）の定義となる最寒月平均気温の基準は何℃以上か。", a: ["18℃", "18℃以上", "18"] },
+      { id: 202, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "熱帯地域に広く分布する、赤色の土壌を何というか。", a: ["ラトソル"] },
+      { id: 203, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "熱帯雨林気候（Af）において、毎日のように午後に降る強い雨を何というか。", a: ["スコール"] },
+      { id: 204, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "南アメリカのアマゾン川流域に見られる熱帯雨林の呼称を何というか。", a: ["セルバ"] },
+      { id: 205, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "東南アジアなどに見られる熱帯雨林の呼称を何というか。", a: ["ジャングル"] },
+      { id: 206, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "熱帯のやせた土地で行われてきた、タロイモやキャッサバなどを栽培する伝統的な農業は何か。", a: ["焼畑農業", "焼畑"] },
+      { id: 207, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "かつて欧米諸国の植民地であった地域などで見られる、天然ゴムやカカオなどを大規模に育てる農業形態を何というか。", a: ["プランテーション農業", "プランテーション"] },
+      { id: 208, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "単一の商品作物の生産や輸出に頼る経済構造を何というか。", a: ["モノカルチャー経済", "モノカルチャー"] },
+      { id: 209, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "季節風（モンスーン）の影響を受けて、弱い乾季がある熱帯の気候（Am）を何というか。", a: ["モンスーン気候", "熱帯モンスーン気候"] },
+      { id: 210, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "サバナ気候（Aw）において、夏の雨季をもたらす気圧帯は何か。", a: ["赤道低圧帯", "熱帯収束帯"] },
+      { id: 211, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "サバナ気候（Aw）において、冬の乾季をもたらす気圧帯は何か。", a: ["亜熱帯高圧帯", "中緯度高圧帯"] },
+      { id: 212, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "サバナ気候に広がる丈の高い草原と疎林のうち、オリノコ川流域での呼び名を何というか。", a: ["リャノ"] },
+      { id: 213, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "サバナ気候に広がる丈の高い草原と疎林のうち、ブラジル高原での呼び名を何というか。", a: ["カンポ"] },
+      { id: 214, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "インドのデカン高原に分布する、玄武岩が風化した綿花栽培に適した黒色土壌を何というか。", a: ["レグール"] },
+      { id: 215, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "ブラジル高原に分布する、玄武岩が風化したコーヒーやさとうきび栽培に適した紫色の土壌を何というか。", a: ["テラローシャ"] },
+      { id: 216, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "乾燥帯（B）は、年間総降水量よりも「何」が多い地域として定義されるか。", a: ["年間蒸発量", "蒸発量"] },
+      { id: 217, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "砂漠気候（BW）において、降水時のみ水が流れる「かれ谷」を何というか。", a: ["ワジ"] },
+      { id: 218, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "イランなどで山から水を引く地下水路を何というか（北アフリカでの呼称も答えよ）。", a: ["カナート", "カナート（北アフリカではフォガラ）", "フォガラ"] },
+      { id: 219, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "ステップ気候（BS）に広がる短草草原を何というか。", a: ["ステップ"] },
+      { id: 220, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "ウクライナのルノーセム帯などに分布する、小麦栽培に最適な世界有数の肥沃な黒色土壌を何というか。", a: ["チェルノーゼム"] },
+      { id: 221, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "アメリカのステップ気候帯などに分布する、小麦栽培に適した黒色の土壌を何というか。", a: ["プレーリー土"] },
+      { id: 222, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "モンゴルのステップ気候において、羊やヤギなどの放牧を行う人々が住む移動式テントを何というか。", a: ["ゲル"] },
+      { id: 223, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "地下水をくみ上げて円形の農地を作る、乾燥地域で見られる農業方式を何というか。", a: ["センターピボット"] },
+      { id: 224, genre: 2, gName: "ジャンル2：熱帯・乾燥帯", q: "アフリカのサハラ砂漠の南縁に位置し、近年砂漠化が急速に拡大・進行している地域を何というか。", a: ["サヘル"] },
+
+      // ジャンル3
+      { id: 301, genre: 3, gName: "ジャンル3：温帯", q: "温帯（C）の定義となる最寒月平均気温の範囲を答えよ。", a: ["-3℃以上18℃未満", "-3度以上18度未満", "-3℃〜18℃"] },
+      { id: 302, genre: 3, gName: "ジャンル3：温帯", q: "温暖湿潤気候（Cfa）において、四季の区別がもっとも明瞭で、夏が高温多雨になる要因となる気象現象を2つ挙げよ。", a: ["梅雨・台風", "梅雨 台風", "梅雨,台風"] },
+      { id: 303, genre: 3, gName: "ジャンル3：温帯", q: "温暖湿潤気候に属するアメリカ合衆国東部で盛んな、とうもろこしや大豆などを飼料として家畜を育てる農業形態は何か。", a: ["混合農業"] },
+      { id: 304, genre: 3, gName: "ジャンル3：温帯", q: "西岸海洋性気候（Cfb）のヨーロッパが高緯度のわりに温暖である理由となる「暖流」と「風」をそれぞれ答えよ。", a: ["暖流：北大西洋海流 ／ 風：偏西風", "北大西洋海流 偏西風", "北大西洋海流、偏西風"] },
+      { id: 305, genre: 3, gName: "ジャンル3：温帯", q: "フランスなどで見られる、家畜飼育と穀物栽培を組み合わせた農業形態を何というか。", a: ["混合農業"] },
+      { id: 306, genre: 3, gName: "ジャンル3：温帯", q: "オランダなどで盛んな、広大な牧草地を利用して乳製品やチーズを生産する農業を何というか。", a: ["酪農"] },
+      { id: 307, genre: 3, gName: "ジャンル3：温帯", q: "地中海性気候（Cs）の「夏」と「冬」の気候の特徴をそれぞれ答えよ。", a: ["夏：高温乾燥 ／ 冬：温暖湿潤", "夏 高温乾燥 冬 温暖湿潤", "夏：高温乾燥 冬：温暖湿潤"] },
+      { id: 308, genre: 3, gName: "ジャンル3：温帯", q: "地中海性気候の地域に分布する、夏の乾燥に耐える分厚い葉を持つ樹木群を何というか。", a: ["硬葉樹"] },
+      { id: 309, genre: 3, gName: "ジャンル3：温帯", q: "ポルトガルやスペインで生産が多く、ワインの栓などに利用される硬葉樹の樹皮は何か。", a: ["コルク", "コルクガシ"] },
+      { id: 310, genre: 3, gName: "ジャンル3：温帯", q: "地中海性気候の地域で盛んな、オリーブやぶどうなどの果樹栽培を中心とした農業を何というか。", a: ["地中海式農業"] },
+      { id: 311, genre: 3, gName: "ジャンル3：温帯", q: "温暖冬季少雨気候（Cw）において分布する、ツバキなどの樹木群を何というか。", a: ["照葉樹"] },
+      { id: 312, genre: 3, gName: "ジャンル3：温帯", q: "温暖冬季少雨気候に属するインド北部で栽培が盛んな、世界的な生産量を誇る農産物は何か。", a: ["茶", "茶葉"] },
+      { id: 313, genre: 3, gName: "ジャンル3：温帯", q: "アジアの温帯地域で行われている、1年に同じ耕地で2回米を生産する栽培方法を何というか。", a: ["二期作"] },
+      { id: 314, genre: 3, gName: "ジャンル3：温帯", q: "米の生産量が世界第1位の国はどこか。", a: ["中国"] },
+      { id: 315, genre: 3, gName: "ジャンル3：温帯", q: "チーズの貿易（輸出）量が世界第1位の国はどこか。", a: ["オランダ"] },
+
+      // ジャンル4
+      { id: 401, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯（冷帯・D）の定義となる最寒月平均気温と最暖月平均気温の基準をそれぞれ答えよ。", a: ["最寒月：-3℃未満 ／ 最暖月：10℃以上", "最寒月 -3℃未満 最暖月 10℃以上", "最寒月-3℃未満 最暖月10℃以上"] },
+      { id: 402, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯が南半球にはほとんどなく、北半球の高緯度地方のみに分布する理由は何か。", a: ["南半球の高緯度帯に陸地がほとんど存在しないため", "陸地がないため", "陸地が少ないため"] },
+      { id: 403, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯の地中に広がっている、年間を通して凍結したままの土壌を何というか。", a: ["永久凍土"] },
+      { id: 404, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯の住宅において、暖房の熱で地中の永久凍土が融けて建物が傾くのを防ぐために採用されている構造は何か。", a: ["高床式", "高床の住宅", "高床"] },
+      { id: 405, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯地域に広く分布する、低温のため有機物の分解が進まない白っぽい酸性土壌を何というか。", a: ["ポドゾル"] },
+      { id: 406, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "シベリアやカナダなどに広がる、広大な針葉樹林帯を何というか。", a: ["タイガ"] },
+      { id: 407, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯湿潤気候（Df）の特徴として、1年間の降水量パターンはどうなっているか。", a: ["1年中降水量がある", "年中多雨", "1年中雨が降る"] },
+      { id: 408, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "亜寒帯冬季少雨気候（Dw）の特徴として、冬の気候はどうなっているか。", a: ["低温乾燥", "冬低温乾燥"] },
+      { id: 409, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "ロシアのサハ共和地に位置し、人が住む地域として史上最低気温（-71.2℃）を記録した集落はどこか。", a: ["オイミャコン"] },
+      { id: 410, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "近年、地球温暖化により永久凍土が融解することで地中から大気中に放出され、さらに温暖化を促進させている温室効果ガスは何か。", a: ["メタン", "メタンガス"] },
+      { id: 411, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "寒帯（E）の定義となる最暖月平均気温の基準は何℃未満か。", a: ["10℃未満", "10℃", "10"] },
+      { id: 412, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "ツンドラ気候（ET）の最暖月平均気温の範囲を答えよ。", a: ["0℃以上10℃未満", "0℃〜10℃", "0度以上10度未満"] },
+      { id: 413, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "ツンドラ気候の夏に、氷雪が融けて表面に生育する樹木以外の植物は何か。", a: ["コケ類", "地衣類", "コケ類（地衣類）"] },
+      { id: 414, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "ツンドラ気候の地域において、先住民らによって行われている代表的な家畜の遊牧対象は何か。", a: ["トナカイ"] },
+      { id: 415, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "北極海沿岸のツンドラ地帯で、アザラシなどの狩猟を行って暮らしてきた先住民を何というか。", a: ["イヌイット"] },
+      { id: 416, genre: 4, gName: "ジャンル4：亜寒帯・寒帯", q: "氷雪気候（EF）のように、年中氷雪におおわれ人間が定住できない無居住地域を何というか。", a: ["アネクメーネ"] }
+    ];
+
+    /* ==========================================
+       アプリケーションの状態管理
+    ========================================== */
+    let currentQuizList = [];
+    let currentQuizIndex = 0;
+    let score = 0;
+    let wrongQuestions = {
+      geo: JSON.parse(localStorage.getItem('wrong_geo') || '[]'),
+      history: JSON.parse(localStorage.getItem('wrong_history') || '[]')
+    };
+
+    // UI要素
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const headerTitle = document.getElementById('header-title');
+
+    /* ハンバーガーメニュー制御 */
+    function toggleMenu() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    /* 画面切り替え（テスト離脱時は自動リセット） */
+    function navigate(pageName) {
+      toggleMenu();
+      
+      // 全ページ非表示
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+      if (pageName === 'test') {
+        document.getElementById('page-test').classList.add('active');
+        headerTitle.innerText = "テスト";
+        resetTestPage(); // テストページ離脱・再進入時はリセット
+      } else if (pageName === 'wrong') {
+        document.getElementById('page-wrong').classList.add('active');
+        headerTitle.innerText = "間違えた問題";
+        renderWrongList('geo'); // デフォルトは地理総合
+      }
+    }
+
+    /* テスト：STEP 1 科目選択 */
+    function selectSubject(subject) {
+      if (subject === 'history') {
+        // 歴史総合：タップしても何も表示しない（空）
+        document.getElementById('test-step-subject').style.display = 'none';
+        document.getElementById('test-step-genre').style.display = 'none';
+        document.getElementById('test-step-quiz').style.display = 'none';
+        document.getElementById('test-step-result').style.display = 'none';
+      } else if (subject === 'geo') {
+        document.getElementById('test-step-subject').style.display = 'none';
+        document.getElementById('test-step-genre').style.display = 'block';
+      }
+    }
+
+    /* テストリセット */
+    function resetTestPage() {
+      document.getElementById('test-step-subject').style.display = 'block';
+      document.getElementById('test-step-genre').style.display = 'none';
+      document.getElementById('test-step-quiz').style.display = 'none';
+      document.getElementById('test-step-result').style.display = 'none';
+      currentQuizList = [];
+      currentQuizIndex = 0;
+      score = 0;
+    }
+
+    /* テスト開始 */
+    function startQuiz(genreTarget) {
+      if (genreTarget === 'all') {
+        currentQuizList = [...geoQuestions];
+      } else {
+        currentQuizList = geoQuestions.filter(q => q.genre === genreTarget);
+      }
+
+      // ランダムシャッフル
+      currentQuizList.sort(() => Math.random() - 0.5);
+
+      currentQuizIndex = 0;
+      score = 0;
+
+      document.getElementById('test-step-genre').style.display = 'none';
+      document.getElementById('test-step-quiz').style.display = 'block';
+
+      showQuestion();
+    }
+
+    /* 問題表示 */
+    function showQuestion() {
+      const qData = currentQuizList[currentQuizIndex];
+      const card = document.getElementById('quiz-card');
+      
+      // 発光リセット
+      card.className = "quiz-card";
+
+      document.getElementById('quiz-genre-name').innerText = qData.gName;
+      document.getElementById('quiz-progress').innerText = `第 ${currentQuizIndex + 1} / ${currentQuizList.length} 問`;
+      document.getElementById('quiz-question-text').innerText = qData.q;
+      
+      const input = document.getElementById('user-input');
+      input.value = "";
+      input.disabled = false;
+      input.focus();
+
+      document.getElementById('action-before').style.display = 'block';
+      document.getElementById('action-after').style.display = 'none';
+    }
+
+    /* 解答判定 */
+    function checkAnswer() {
+      const userInput = document.getElementById('user-input').value.trim();
+      if (!userInput) return;
+
+      const qData = currentQuizList[currentQuizIndex];
+      const card = document.getElementById('quiz-card');
+      const isCorrect = qData.a.some(ans => ans.toLowerCase() === userInput.toLowerCase() || userInput.includes(ans));
+
+      document.getElementById('user-input').disabled = true;
+      document.getElementById('action-before').style.display = 'none';
+      document.getElementById('action-after').style.display = 'block';
+
+      const resMsg = document.getElementById('result-message');
+      const ansBox = document.getElementById('official-answer-box');
+
+      if (isCorrect) {
+        card.classList.add('correct');
+        resMsg.innerHTML = '<span class="correct-text">正解！ 🎉</span>';
+        score++;
+      } else {
+        card.classList.add('wrong');
+        resMsg.innerHTML = '<span class="wrong-text">不正解… 😢</span>';
+        addWrongQuestion('geo', qData);
+      }
+
+      ansBox.innerText = `模範解答：${qData.a[0]}`;
+    }
+
+    /* わからない（答えを表示） */
+    function giveUp() {
+      const qData = currentQuizList[currentQuizIndex];
+      const card = document.getElementById('quiz-card');
+
+      document.getElementById('user-input').disabled = true;
+      document.getElementById('action-before').style.display = 'none';
+      document.getElementById('action-after').style.display = 'block';
+
+      card.classList.add('wrong');
+      document.getElementById('result-message').innerHTML = '<span class="wrong-text">答えを確認しましょう</span>';
+      document.getElementById('official-answer-box').innerText = `模範解答：${qData.a[0]}`;
+
+      addWrongQuestion('geo', qData);
+    }
+
+    /* 次の問題へ */
+    function nextQuestion() {
+      currentQuizIndex++;
+      if (currentQuizIndex < currentQuizList.length) {
+        showQuestion();
+      } else {
+        // リザルト
+        document.getElementById('test-step-quiz').style.display = 'none';
+        document.getElementById('test-step-result').style.display = 'block';
+        document.getElementById('result-score').innerText = `${currentQuizList.length} 問中 ${score} 問正解！`;
+      }
+    }
+
+    /* 間違えた問題に追加 */
+    function addWrongQuestion(subject, qData) {
+      const exists = wrongQuestions[subject].some(item => item.id === qData.id);
+      if (!exists) {
+        wrongQuestions[subject].push(qData);
+        localStorage.setItem(`wrong_${subject}`, JSON.stringify(wrongQuestions[subject]));
+      }
+    }
+
+    /* 間違えた問題の削除 */
+    function removeWrongQuestion(subject, qId, event) {
+      event.stopPropagation();
+      wrongQuestions[subject] = wrongQuestions[subject].filter(item => item.id !== qId);
+      localStorage.setItem(`wrong_${subject}`, JSON.stringify(wrongQuestions[subject]));
+      renderWrongList(subject);
+    }
+
+    /* 間違えた問題 タブ切り替え */
+    function switchWrongTab(subject) {
+      document.getElementById('tab-geo').classList.remove('active');
+      document.getElementById('tab-history').classList.remove('active');
+      document.getElementById(`tab-${subject}`).classList.add('active');
+
+      renderWrongList(subject);
+    }
+
+    /* 間違えた問題 カードリスト描画 */
+    function renderWrongList(subject) {
+      const container = document.getElementById('wrong-list-container');
+      container.innerHTML = "";
+
+      const list = wrongQuestions[subject] || [];
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-msg">間違えた問題はありません 🎉</div>';
+        return;
+      }
+
+      list.forEach(qData => {
+        const card = document.createElement('div');
+        card.className = 'flip-card';
+        card.onclick = () => card.classList.toggle('flipped');
+
+        card.innerHTML = `
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <div class="card-genre">${qData.gName || '歴史総合'}</div>
+              <div style="font-weight:bold; font-size:15px;">${qData.q}</div>
+              <div class="card-hint">タップして答えを表示 🔄</div>
             </div>
-
-            <!-- Question 2: Multiple Choice -->
-            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q2">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 2（選択）</span>
-                    <span class="text-xs text-slate-500">ロシア革命</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-4">
-                    1917年の十月革命直後、レーニン率いるボリシェヴィキ政府が即座に提示した「平和に関する布告」において主張された講和の3原則はどれか。
-                </h3>
-                <div class="space-y-2" id="options-q2">
-                    <button onclick="checkChoice(2, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 武力行使の無条件禁止・軍縮・賠償金の支払</button>
-                    <button onclick="checkChoice(2, 1, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 無併合・無賠償・民族自決</button>
-                    <button onclick="checkChoice(2, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 秘密外交の継続・自衛権の留保・即時停戦</button>
-                    <button onclick="checkChoice(2, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 自由貿易の確保・安全保障の確立・植民地維持</button>
-                </div>
-                <div id="feedback-q2" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
+            <div class="flip-card-back">
+              <div style="font-size:12px; opacity:0.8;">答え</div>
+              <div style="font-weight:bold; font-size:18px; margin: 8px 0;">${qData.a[0]}</div>
+              <button class="card-delete" onclick="removeWrongQuestion('${subject}', ${qData.id}, event)">覚えた（削除）</button>
             </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-            <!-- Question 3: Multiple Choice -->
-            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q3">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 3（選択）</span>
-                    <span class="text-xs text-slate-500">ヴェルサイユ・ワシントン体制</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-4">
-                    アメリカのウィルソン大統領が国際連盟の設立を提唱したにもかかわらず、アメリカ合衆国自身が国際連盟に加盟しなかった直接の理由はどれか。
-                </h3>
-                <div class="space-y-2" id="options-q3">
-                    <button onclick="checkChoice(3, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. イギリス・フランスがアメリカの参加を拒否したため</button>
-                    <button onclick="checkChoice(3, 1, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 常任理事国の座が与えられなかったため</button>
-                    <button onclick="checkChoice(3, 2, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 孤立主義の風潮から、アメリカ連邦上院がヴェルサイユ条約の批准を拒否したため</button>
-                    <button onclick="checkChoice(3, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. ワシントン会議の開催が決まり連盟が不要になったため</button>
-                </div>
-                <div id="feedback-q3" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
-            </div>
-
-            <!-- Question 4: Multiple Choice -->
-            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q4">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 4（選択）</span>
-                    <span class="text-xs text-slate-500">ワシントン体制</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-4">
-                    1921〜1922年のワシントン会議において、太平洋地域の現状維持を定めた「四カ条条約」が成立したことに伴い失効した二国間同盟はどれか。
-                </h3>
-                <div class="space-y-2" id="options-q4">
-                    <button onclick="checkChoice(4, 0, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 日英同盟</button>
-                    <button onclick="checkChoice(4, 1, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 露仏同盟</button>
-                    <button onclick="checkChoice(4, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 日清修好条規</button>
-                    <button onclick="checkChoice(4, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 独露再保障条約</button>
-                </div>
-                <div id="feedback-q4" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
-            </div>
-
-            <!-- Question 5: Multiple Choice -->
-            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q5">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 5（選択）</span>
-                    <span class="text-xs text-slate-500">昭和金融恐慌</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-4">
-                    1927（昭和2）年に日本で金融恐慌（昭和金融恐慌）が発生し、銀行の取付け騒ぎが相次ぐ直接のきっかけとなった要因はどれか。
-                </h3>
-                <div class="space-y-2" id="options-q5">
-                    <button onclick="checkChoice(5, 0, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 金輸出解禁による金の国外流出</button>
-                    <button onclick="checkChoice(5, 1, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 関東大震災後に処理が停滞していた震災手形の不良債権化と蔵相の失言</button>
-                    <button onclick="checkChoice(5, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. ニューヨーク株価暴落に端を発する世界恐慌</button>
-                    <button onclick="checkChoice(5, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 松方財政による厳しいデフレ増税政策</button>
-                </div>
-                <div id="feedback-q5" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
-            </div>
-
-            <!-- Question 6: Multiple Choice -->
-            <div class="q-card choice-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q6">
-                <div class="flex items-center gap-2 mb-3">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded">問 6（選択）</span>
-                    <span class="text-xs text-slate-500">明治の産業革命・財政</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-4">
-                    1881（明治14）年に大蔵卿に就任した松方正義が行った、紙幣価値の安定と銀本位制確立を目指した一連の財政政策（松方財政）の組み合わせとして正しいものはどれか。
-                </h3>
-                <div class="space-y-2" id="options-q6">
-                    <button onclick="checkChoice(6, 0, true)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">A. 不換紙幣の回収・整理 — 日本銀行の設立と銀兌換紙幣の発行</button>
-                    <button onclick="checkChoice(6, 1, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">B. 官営模範工場の払い下げ停止 — 金本位制への即時完全移行</button>
-                    <button onclick="checkChoice(6, 2, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">C. 積極的な公債発行によるインフレ誘発 — 租税の劇的な軽減</button>
-                    <button onclick="checkChoice(6, 3, false)" class="opt-btn w-full text-left p-3.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm">D. 外国の資本・銀行の自由進出解禁 — 貿易赤字の容認</button>
-                </div>
-                <div id="feedback-q6" class="hidden mt-4 p-4 rounded-lg bg-slate-50 text-sm"></div>
-            </div>
-
-            <!-- Question 7: Short Answer Text Box -->
-            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q7">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 7（記述）</span>
-                        <span class="text-xs text-slate-500">日本経済（金解禁と昭和恐慌）</span>
-                    </div>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-3">
-                    1930年、浜口雄幸内閣の蔵相・井上準之助が進めた「金輸出解禁（金解禁）」の主な【目的】と、実施後に発生した【経済的影響】について、「為替相場」「世界恐慌」「デフレ」の3つの語句を用いて解説しなさい。
-                </h3>
-
-                <!-- Input Text Area -->
-                <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】（あなたの考えを書いてみよう）</label>
-                    <textarea id="input-q7" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
-                </div>
-
-                <div class="mt-3 flex items-center justify-between">
-                    <button onclick="toggleTextAnswer(7)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
-                        模範解答とポイントを表示
-                    </button>
-                </div>
-
-                <!-- Hidden Model Answer Box -->
-                <div id="answer-q7" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
-                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
-                            為替相場の安定と産業合理化による国際競争力の強化を目指して金輸出解禁を実施したが、直後に発生した世界恐慌の影響と重なったことで極度なデフレを引き起こし、日本経済は深刻な「昭和恐慌」へ陥った。
-                        </p>
-                    </div>
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
-                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
-                            <li><strong class="text-emerald-800">目的:</strong> 為替相場の安定、国際競争力の強化（産業合理化）</li>
-                            <li><strong class="text-emerald-800">時期・背景:</strong> 世界恐慌の直前・発生期と重なったこと</li>
-                            <li><strong class="text-emerald-800">影響:</strong> 深刻なデフレの発生、昭和恐慌の深化</li>
-                        </ul>
-                    </div>
-                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
-                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
-                        <button onclick="rateTextQuestion(7, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
-                        <button onclick="rateTextQuestion(7, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question 8: Short Answer Text Box -->
-            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q8">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 8（記述）</span>
-                        <span class="text-xs text-slate-500">明治の産業革命</span>
-                    </div>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-3">
-                    明治後期の日本の産業革命において、二大繊維産業であった「綿紡績業」と「製糸業」の原料調達と獲得市場（外貨獲得）に関する決定的な違いを短文で説明しなさい。
-                </h3>
-
-                <!-- Input Text Area -->
-                <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】</label>
-                    <textarea id="input-q8" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
-                </div>
-
-                <div class="mt-3 flex items-center justify-between">
-                    <button onclick="toggleTextAnswer(8)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
-                        模範解答とポイントを表示
-                    </button>
-                </div>
-
-                <!-- Hidden Model Answer Box -->
-                <div id="answer-q8" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
-                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
-                            綿紡績業は輸入原綿に依存し主に清（中国）等へ綿糸を輸出したのに対し、製糸業は国産の繭（絹糸）を用いて生糸を生産し、主にアメリカへ輸出して貴重な外貨を獲得した。
-                        </p>
-                    </div>
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
-                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
-                            <li><strong class="text-emerald-800">綿紡績業:</strong> 原料は輸入（原綿）、主な輸出先はアジア（中国など）</li>
-                            <li><strong class="text-emerald-800">製糸業:</strong> 原料は国産（農家の繭）、主な輸出先はアメリカ、貴重な外貨を獲得</li>
-                        </ul>
-                    </div>
-                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
-                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
-                        <button onclick="rateTextQuestion(8, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
-                        <button onclick="rateTextQuestion(8, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question 9: Short Answer Text Box -->
-            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q9">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 9（記述）</span>
-                        <span class="text-xs text-slate-500">不戦条約</span>
-                    </div>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-3">
-                    1928年にパリで締結された「不戦条約（ケロッグ・ブリアン協定）」が持っていた画期的な意義と、実際の戦争防止において残されていた最大の【抜け道（限界）】について説明しなさい。
-                </h3>
-
-                <!-- Input Text Area -->
-                <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】</label>
-                    <textarea id="input-q9" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
-                </div>
-
-                <div class="mt-3 flex items-center justify-between">
-                    <button onclick="toggleTextAnswer(9)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
-                        模範解答とポイントを表示
-                    </button>
-                </div>
-
-                <!-- Hidden Model Answer Box -->
-                <div id="answer-q9" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
-                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
-                            国家の政策手段としての戦争を一般的に禁止し紛争の平和的解決を義務付けた点で画期的であったが、「自衛権に基づく戦争（自衛行動）」は除外・留保されていたため、自衛を口実とした侵略行為を防ぐことができなかった。
-                        </p>
-                    </div>
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
-                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
-                            <li><strong class="text-emerald-800">画期的な意義:</strong> 国家の政策手段としての戦争放棄・国際紛争の平和的解決</li>
-                            <li><strong class="text-emerald-800">限界・抜け道:</strong> 「自衛のための戦争（自衛権）」の留保・除外</li>
-                        </ul>
-                    </div>
-                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
-                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
-                        <button onclick="rateTextQuestion(9, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
-                        <button onclick="rateTextQuestion(9, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question 10: Short Answer Text Box -->
-            <div class="q-card text-q bg-white rounded-xl shadow-sm border border-slate-200 p-6" id="q10">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded">問 10（記述）</span>
-                        <span class="text-xs text-slate-500">ロシア革命と十四カ条</span>
-                    </div>
-                </div>
-                <h3 class="text-base font-bold text-slate-800 mb-3">
-                    1917年にロシアでレーニンが「平和に関する布告」を出したことが、1918年にアメリカのウィルソン大統領が「十四カ条」の平和原則を発表するに至った政治的背景にどのように影響を与えたか簡潔に説明しなさい。
-                </h3>
-
-                <!-- Input Text Area -->
-                <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">【解答記入欄】</label>
-                    <textarea id="input-q10" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="ここに記述解答を入力してください..."></textarea>
-                </div>
-
-                <div class="mt-3 flex items-center justify-between">
-                    <button onclick="toggleTextAnswer(10)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition shadow-sm">
-                        模範解答とポイントを表示
-                    </button>
-                </div>
-
-                <!-- Hidden Model Answer Box -->
-                <div id="answer-q10" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-slate-800 space-y-3">
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">💡 模範解答例:</span>
-                        <p class="bg-white p-3 rounded border border-emerald-200 font-medium text-slate-700">
-                            レーニンが無併合・無賠償・民族自決を掲げて即時講和を訴えたことで世界的人気を集めたため、連合国側の主導権維持と資本主義陣営の正当性を主張する目的で、ウィルソンが対抗して「十四カ条」を発表した。
-                        </p>
-                    </div>
-                    <div>
-                        <span class="font-bold text-emerald-900 block mb-1">🔍 採点キーワード・チェック:</span>
-                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
-                            <li><strong class="text-emerald-800">レーニンの講和のインパクト:</strong> 即時講和の呼びかけと労働者・民衆へのアピール</li>
-                            <li><strong class="text-emerald-800">ウィルソンの意図:</strong> 社会主義（ボリシェヴィキ）への対抗、資本主義陣営の戦争目的の正当化と主導権の確保</li>
-                        </ul>
-                    </div>
-                    <div class="pt-2 border-t border-emerald-200 flex items-center gap-3">
-                        <span class="text-xs font-bold text-slate-700">自己評価:</span>
-                        <button onclick="rateTextQuestion(10, true)" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded hover:bg-emerald-700">◯ 書けた（1点）</button>
-                        <button onclick="rateTextQuestion(10, false)" class="px-3 py-1 bg-slate-300 text-slate-700 text-xs font-semibold rounded hover:bg-slate-400">× 不十分（0点）</button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Finish Banner -->
-        <div class="mt-12 bg-indigo-900 text-white rounded-xl p-8 text-center shadow-lg">
-            <h3 class="text-xl font-bold mb-2">お疲れ様でした！</h3>
-            <p class="text-indigo-200 text-sm max-w-md mx-auto mb-6">間違えた問題や記述が不十分だった問題は、教科書の該当箇所（ヴェルサイユ体制、松方財政、金解禁など）をもう一度見直しておきましょう！</p>
-            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="bg-white text-indigo-900 font-bold px-6 py-2.5 rounded-lg hover:bg-indigo-50 transition shadow">
-                ページの一番上に戻る
-            </button>
-        </div>
-
-    </main>
-
-    <!-- JavaScript Logic -->
-    <script>
-        const scores = {
-            1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
-            7: 0, 8: 0, 9: 0, 10: 0
-        };
-
-        const explanations = {
-            1: "正解: B. 二十一カ条の要求\n【解説】1915年、第2次大隈重信内閣は中国の袁世凱政権に対し、ドイツが山東省に持っていた権益の継承や南満州・東部内蒙古での益拡張などを求めた「二十一カ条の要求」を突きつけ、承諾させました。",
-            2: "正解: B. 無併合・無賠償・民族自決\n【解説】1917年の十月革命で成立したレーニン率いるボリシェヴィキ政府は、「平和に関する布告」で領土の無併合・賠償金の無支払・民族自決に基づく即時講和を呼びかけました。",
-            3: "正解: C. 孤立主義の風潮から、アメリカ連邦上院がヴェルサイユ条約の批准を拒否したため\n【解説】ウィルソン大統領が主導した国際連盟でしたが、アメリカ議会（上院）は伝統的な孤立主義（モンロー主義）の影響からヴェルサイユ条約の批准を拒否し、アメリカは不参加となりました。",
-            4: "正解: A. 日英同盟\n【解説】1921〜22年のワシントン会議で締結された「四カ条条約」は太平洋地域の現状維持を定めたもので、これにより1902年以来の「日英同盟」が解消されました。",
-            5: "正解: B. 関東大震災後に処理が停滞していた震災手形の不良債権化と蔵相の失言\n【解説】1923年の関東大震災後に発行された「震災手形」の決済不能（不良債権化）が背景にあり、1927年に片岡直温蔵相が議会で「東京渡辺銀行が破綻した」と失言したことで取付け騒ぎが勃発しました。",
-            6: "正解: A. 不換紙幣の回収・整理 — 日本銀行の設立と銀兌換紙幣の発行\n【解説】松方財政では紙幣整理と増税（デフレ政策）を進め、1882年に中央銀行である日本銀行を設立、1885年から銀兌換紙幣を発行して紙幣価値を安定させました。"
-        };
-
-        function checkChoice(qNum, selectedIdx, isCorrect) {
-            const container = document.getElementById(`options-q${qNum}`);
-            const buttons = container.querySelectorAll('.opt-btn');
-            
-            buttons.forEach((btn, idx) => {
-                btn.disabled = true;
-                if (idx === selectedIdx) {
-                    btn.classList.remove('hover:bg-slate-50', 'border-slate-200');
-                    if (isCorrect) {
-                        btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'font-bold');
-                    } else {
-                        btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-900');
-                    }
-                }
-            });
-
-            const feedback = document.getElementById(`feedback-q${qNum}`);
-            feedback.classList.remove('hidden');
-            if (isCorrect) {
-                feedback.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
-                feedback.innerHTML = `<strong>⭕ 正解！</strong><br><p class="mt-1 text-xs whitespace-pre-line">${explanations[qNum]}</p>`;
-                scores[qNum] = 1;
-            } else {
-                feedback.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200');
-                feedback.innerHTML = `<strong>❌ 不正解...</strong><br><p class="mt-1 text-xs whitespace-pre-line">${explanations[qNum]}</p>`;
-                scores[qNum] = 0;
-            }
-
-            updateTotalScore();
-        }
-
-        function toggleTextAnswer(qNum) {
-            const ansBox = document.getElementById(`answer-q${qNum}`);
-            ansBox.classList.toggle('hidden');
-        }
-
-        function rateTextQuestion(qNum, isPoint) {
-            scores[qNum] = isPoint ? 1 : 0;
-            const ansBox = document.getElementById(`answer-q${qNum}`);
-            let badge = ansBox.querySelector('.eval-badge');
-            if (!badge) {
-                badge = document.createElement('div');
-                badge.className = 'eval-badge mt-2 text-xs font-bold px-2 py-1 rounded inline-block';
-                ansBox.appendChild(badge);
-            }
-
-            if (isPoint) {
-                badge.className = 'eval-badge mt-2 text-xs font-bold px-2.5 py-1 rounded inline-block bg-emerald-200 text-emerald-900';
-                badge.textContent = '評価: 1点 (正解)';
-            } else {
-                badge.className = 'eval-badge mt-2 text-xs font-bold px-2.5 py-1 rounded inline-block bg-slate-200 text-slate-800';
-                badge.textContent = '評価: 0点 (復習が必要)';
-            }
-
-            updateTotalScore();
-        }
-
-        function updateTotalScore() {
-            const total = Object.values(scores).reduce((a, b) => a + b, 0);
-            document.getElementById('total-score').textContent = total;
-        }
-
-        function filterQuestions(type) {
-            const allCards = document.querySelectorAll('.q-card');
-            const btnAll = document.getElementById('btn-all');
-            const btnChoice = document.getElementById('btn-choice');
-            const btnText = document.getElementById('btn-text');
-
-            // Reset styles
-            [btnAll, btnChoice, btnText].forEach(btn => {
-                btn.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-white text-slate-700 border border-slate-300 hover:bg-slate-100';
-            });
-
-            if (type === 'all') {
-                btnAll.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow';
-                allCards.forEach(c => c.style.display = 'block');
-            } else if (type === 'choice') {
-                btnChoice.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow';
-                allCards.forEach(c => {
-                    c.style.display = c.classList.contains('choice-q') ? 'block' : 'none';
-                });
-            } else if (type === 'text') {
-                btnText.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white shadow';
-                allCards.forEach(c => {
-                    c.style.display = c.classList.contains('text-q') ? 'block' : 'none';
-                });
-            }
-        }
-    </script>
+    // Enterキーで判定
+    document.getElementById('user-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+  </script>
 </body>
 </html>
-```eof
-
-### アプリの概要と特徴
-1. **選択問題（6問）**: タップすると即時に正誤判定と解説が表示され、スコアが自動加算されます。
-2. **記入欄付き記述問題（4問）**: 自分の解答を入力欄（`<textarea>`）に書いてから「模範解答とポイントを表示」をタップし、キーワードや論点が抑えられているか確認できます。
-3. **自己採点・スコア集計**: 記述問題も自己評価ボタンで点数（1点 / 0点）を加算でき、リアルタイムで合計点が記録されます。
-
-記述問題の復習やアウトプット練習にぜひ活用してください！
